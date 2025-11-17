@@ -17,7 +17,7 @@ Var ev=WaitEvent
    TIEMPO=Time
     SetGadgetText (3,Str(TIEMPO))
    ElseIf ev=EventSize then
-         ? SizeX & "  " & SizeY
+      ''   ? SizeX & "  " & SizeY
       elfont=SizeX * 30 / 260      
       ButtonGadget(3,10,10,sizex-10,sizey-10,"",BS_LEFT  ) ' 240 60
       SetGadgetFont(3,CINT(LoadFont("arial",elfont)))
