@@ -20,7 +20,8 @@ Al dar click sobre esas pocas palabras del mensje aparece el mensaje completo.
 y hasta no aceptar se lo sigue mostrando, al aceptar vuelce el ciclo
 conservando el mismo mensaje por omision si se desea sea el mismo sino se lo
 puede cambiar,,Con intervalo 0 lq segunda vez sugiere el mensaje por omision
-DESCANSE UN POCO..
+DESCANSE UN POCO..Se agrego la fecha de Hoy en el titulo de la aplicacion
+como sugerencia.
 
 
 
