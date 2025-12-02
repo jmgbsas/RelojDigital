@@ -30,7 +30,10 @@ Do
         If INTERVALO1 > 0 Then
             
            If INTERVALO2=INTERVALO1 Then
-             Beep
+  ' UNO DE LOS RING DE WINDOWS 10
+    PlaySound(".\Ring05.wav", 0, SND_FILENAME+SND_NODEFAULT +SND_ASYNC)
+      
+             ''Beep
              SetGadgetText (3, MENSAJE)
               INTERVALO2=INTERVALO2+1
            Else
@@ -44,7 +47,6 @@ Do
            EndIf
         Else
           SetGadgetText (3,Str(TIEMPO))
-'''          If TIEMPO="00:00:01" Then
           If TIEMPO="00:00:01" Then
              TITULO=Format(NOW,"dd/mm/yyyy")
              SetWindowText(hwnd, TITULO)
