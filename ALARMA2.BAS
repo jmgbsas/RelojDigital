@@ -44,7 +44,10 @@ Do
            EndIf
         Else
           SetGadgetText (3,Str(TIEMPO))
-          
+          If TIEMPO="00:00:01" Then
+             TITULO=Format(NOW,"dd/mm/yyyy")
+             SetWindowText(hwnd, TITULO)
+          EndIf
         EndIf 
 
      Case EventSize 
