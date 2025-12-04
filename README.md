@@ -15,14 +15,28 @@ Cuando suena un Beep si no se ve el mensaje dar click en la alama y aparecera.
 
 ALARMA2
 Es similar solo que pocas letras del mensaje del aviso se escribe sobre la hora
-para llamar la atencion sino se escucho el beep.
-Al dar click sobre esas pocas palabras del mensje aparece el mensaje completo.
-y hasta no aceptar se lo sigue mostrando, al aceptar vuelce el ciclo
-conservando el mismo mensaje por omision si se desea sea el mismo sino se lo
-puede cambiar,,Con intervalo 0 lq segunda vez sugiere el mensaje por omision
+para llamar la atencion y se escucha el Ring05.wav. aL DAR CLICK SOBRE EL MENSAJE ANTES DE
+LOS 8 SEGUNDOS O DESPUES SOBRE LA HORA, SE PUEDE CAMBIAR EL INTERVALO Y/O  con mismo mensaje 
+u otro nuevo. Con intervalo 0 la segunda vez sugiere el mensaje por omision
 DESCANSE UN POCO..Se agrego la fecha de Hoy en el titulo de la aplicacion
-como sugerencia.
+como sugerencia.Pâra que  se levante al inicio de windows crear un acceso directo
+y copiar este acceso en Startup o Inicio del menu de programas, si se coloca
+todo en esa carpeta windows tambien toca el wav o si se renombra la extension pide como 
+se lo quiere abrir o si esta en una carpeta abre la carpeta siempre hace algo con 
+lo que este en ese lugar, por eso mejor un acceso directo.
+EN CADA ALARMA SE SUMA 8 SEGUNDOS PARA LA PROXIMA ALARMA 
+POR EL RETARDO DE MOSTRAR EL MENSAJE
 
-
+ HAY DOS TIPOS DE ALARMAS, UNA SOLA REPETITIVA AUTOMATICA Y 100 FIJAS DE UNA SOLA VEZ
+ 1) EL INTERVALO UNICO ES  REPETITIVO Y AUTOMATICO, SIN INTERVENCION DEL USUARIO
+    CADA N MINUTOS AVISARA DEL INTERVALO TRANSCURRIDO AJUSTADO MOSTRANDO UN MENSAJE Y UN
+    SONIDO DURANTE 8 SEGUNDOS APROXIMADAMENTE. SE CAMBIA COMO SIEMPRE DANDO CLICK EN EL 
+    BOTON DE HORA.  
+ 2) AL TOCAR X PARA CERRAR EL PROGRAMA SE PRESENTA UN MENU PARA ALARMAS FIJAS DE UNA 
+    SOLA VEZ, SON RECORDATORIOS HASTA 20. AL LLEGAR A LA ALARMA 21 PISA LA 1 Y SIGUE.
+    O SEA SOLO RECUERDA 20 ALARMAS.
+    TENDRA OTRO SONIDO DE ALARMA DE 8 SEGUNDOS Y  MOSTRARA MENSAJE CORTO QUE INTRODUJA
+    EL USUARIO. SI SE ACEPTA LA HORA "0" SALE Y TERMINA EL PROGRAMA SI SE CIERRA EL PROGRAMA
+    SE PIERDE TODO. EN ALGUNA OTRA VERSION RECORDARA LAS ALARMAS.
 
 
