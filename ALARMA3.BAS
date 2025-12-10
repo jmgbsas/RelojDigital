@@ -22,11 +22,11 @@ Sub retardo()
 
 End Sub
 Sub sub1 (MENSAJE As string)
-MessBox("MENSAJE DE INTERVALO " ,UCase (MENSAJE)+" "+Time)
+MessBox("MENSAJE DE INTERVALO " ,UCase (MENSAJE)+" "+Time,MB_TOPMOST + MB_SETFOREGROUND)
 End Sub
 
 Sub sub2( mensaje As String)
-MessBox("MENSAJE DE ALARMA " , UCase(mensaje) +" "+Time)
+MessBox("MENSAJE DE ALARMA " , UCase(mensaje) +" "+Time,MB_TOPMOST + MB_SETFOREGROUND)
 End Sub
 
 Dim As string alarmas(1 To 20), HORA 
@@ -34,11 +34,11 @@ For X As Integer=1 To 20
     alarmas(x)="0"
 Next X
 Dim As Integer ancho, alto, elfont=30, INTERVALO1=0,INTERVALO2=0,cntalarmas=0,HAYINTERVALO=0
-Dim As String MINUTOS ,TITULO=Format(NOW,"dd/mm/yyyy")
-Dim As String MENSAJE=" ACEPTE, LUEGO ENTRE INTERVALO Y MENSAJE."
+Dim As String MINUTOS="0" ,TITULO=Format(NOW,"dd/mm/yyyy")
+Dim As String MENSAJE=" ACEPTE, LUEGO ENTRE INTERVALO Y MENSAJE.",MENSAJE1
 Dim As String MENSAJE2 ="DESCANSE UN POCO .."
-Dim As String MENSAJES_FIJOS (1 To 100), MENSAJE3,INTER,OLDALARM
- 
+Dim As String MENSAJES_FIJOS (1 To 20), MENSAJE3,INTER,OLDALARM
+MessBox("INFO" ,"ALARMA3 DIGITAL, SE PROGRAMA TODAS LAS VECES QUE SE DESEE PARA CORTAR EL TRABAJO O RECORDAR ALGO, PULSANDO LA HORA DEJA CONFIGURAR MINUTOS Y MENSAJE DEL INTERVALO. SI NO SE CONFIGURA O LOS MINUTOS VALEN 0, ES UN RELOJ SIN ALARMA, SI SE PULSA X, CONFIGURA UNA HORA DE ALARMA EN FORMATO 00:00:00, CON 0 TERMINA EL PROGRAMA") 
 TITULO=InputBox("AJUSTE" ,"TITULO DE LA ALARMA2?  ", TITULO, ES_MULTILINE + ES_AUTOVSCROLL,0 )
  Dim As Integer x, y, buttons, res ,SALE=0
 
@@ -54,30 +54,34 @@ Open "INTERVALO.TXT" For APPEND As 1 ' SINO EXISTE LO CREA
 Sleep 10
 Close 1
 Sleep 10
-Open "INTERVALO.TXT" For Input As 1 ' SINO EXISTE LO CREA
-Input #1, INTER, MENSAJE
+MENSAJE1=MENSAJE2
+Open "INTERVALO.TXT" For Input As 2 '
+Input #2, INTER, MENSAJE2
 
+If MENSAJE2="" Then
+   MENSAJE2=MENSAJE1
+EndIf
+Close 2
 
-Close 1
 Sleep 100
-INTERVALO1=CInt(INTER)*60
+MINUTOS=Trim(INTER)
+INTERVALO1=CInt(MINUTOS)*60
 
-Open "ALARMAS.TXT" For Append As 1 ' SINO EXISTE LO CREA
+Open "ALARMAS.TXT" For Append As 3 ' SINO EXISTE LO CREA
 Sleep 10
-Close 1
+Close 3
 Sleep 10
-Open "ALARMAS.TXT" For Input As 1 ' SINO EXISTE LO CREA
+Open "ALARMAS.TXT" For Input As 4 ' SINO EXISTE LO CREA
 cntalarmas=0
-Do While Not Eof(1)
+Do While Not Eof(4)
   cntalarmas=cntalarmas+1
-  Input #1, alarmas(cntalarmas), MENSAJES_FIJOS(cntalarmas)
+  Input #4, alarmas(cntalarmas), MENSAJES_FIJOS(cntalarmas)
   
 Loop
 'SI CNTALARMAS >0 TENEMOS ALGUNAS ALARMAS DEL DIA ANTERIOR
 ''''''''
-
- FILEFLUSH(-1)
- 
+Close 4
+  
 Do 
   Var EV=WaitEvent
    Select Case EV
@@ -99,18 +103,14 @@ Do
           EndIf
           
    
-   MENSAJE3=InputBox("MENSAJE DE ALARMA UNICA " ,"MENSAJE A ", "", ES_MULTILINE + ES_AUTOVSCROLL,0 )
-   MENSAJES_FIJOS(cntalarmas)=Trim(MENSAJE3)
-   Open "INTERVALO.TXT" For Output As 1
-   Print #1, INTERVALO1/60;",";MENSAJE ' EL ULTIMO ES SOL O1
-   Close 1
-   Sleep 100
-   Open "ALARMAS.TXT" For Output As 1
-   For J1 As Integer=1 To cntalarmas
-     Print #1, alarmas(J1);",";MENSAJES_FIJOS(J1) 
-   Next j1
-   Close 1
-   Sleep 100
+         MENSAJE3=InputBox("MENSAJE DE ALARMA UNICA " ,"MENSAJE A ", "", ES_MULTILINE + ES_AUTOVSCROLL,0 )
+         MENSAJES_FIJOS(cntalarmas)=Trim(MENSAJE3)
+          Open "ALARMAS.TXT" For Output As 6
+          For J1 As Integer=1 To cntalarmas
+            Print #6, alarmas(J1);",";MENSAJES_FIJOS(J1) 
+          Next j1
+          Close 6
+          Sleep 100
         EndIf
      Case EventTimer 
         TIEMPO1=Time
@@ -123,7 +123,7 @@ Do
               PlaySound(".\Ring05.wav", 0, SND_FILENAME+SND_NODEFAULT +SND_ASYNC)
              ''Beep
               
-              Var t1= threadCall sub1 (MENSAJE)
+              Var t1= threadCall sub1 (MENSAJE2)
               
               INTERVALO2=0
            Else
@@ -167,30 +167,29 @@ Do
       SetGadgetFont(3,CINT(LoadFont("arial",elfont)))
      CASE EventGadget
        Select Case EventNumber
-'         Case 1
-'            MessBox("","It's WHAT")
+  ''       Case 1
+   ''         MessBox("","It's WHAT")
          Case 3  'boton solo cambia intervalo
          MessBox( "",MENSAJE)
          Dim As String default=Str("0")
          If INTERVALO1 > 0 Then
-            default=Str(INTERVALO1/60)
+            default=Str(MINUTOS)
          EndIf
             
          MINUTOS=InputBox("CONFIG ALARMA" ,"INTERVALO EN MINUTOS ", default, ES_MULTILINE + ES_AUTOVSCROLL,0 )
          If INTERVALO1=0 Then
-            MENSAJE=MENSAJE2
+            MENSAJE2=MENSAJE1
          EndIf
-         MENSAJE=InputBox("MENSAJE" ,"CAMBIE O ACEPTE EL MENSAJE ", MENSAJE, ES_MULTILINE + ES_AUTOVSCROLL,0 )     
+         MENSAJE2=InputBox("MENSAJE" ,"CAMBIE O ACEPTE EL MENSAJE ", MENSAJE2, ES_MULTILINE + ES_AUTOVSCROLL,0 )     
          INTERVALO1=CInt(MINUTOS)*60 'en  segundo
          INTERVALO2=0
-   Open "INTERVALO.TXT" For Output As 1
-   Print #1, INTERVALO1/60;",";MENSAJE ' EL Unico y ULTIMO 
-   Close 1
-   Sleep 100
-
-             
-       END Select   
+   Open "INTERVALO.TXT" For Output As 7
+   Print #7, MINUTOS;",";MENSAJE2 ' EL Unico y ULTIMO 
+   Close 7    
+     Sleep 100        
+       END Select
+   
    End Select
- 
+   
 Loop 
 End
