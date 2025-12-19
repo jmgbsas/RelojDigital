@@ -14,6 +14,7 @@
 '#Include "win/winbase.bi"
 '''declare function GetProcessIdOfThread(byval Thread as HANDLE) as UInteger
 ' AUTOR JOSE GALEANO 14-12-2025 COMO HOBBY Y HERRAMIENTA DE TRABAJAO EN PC 
+' fix Alarma4 18-12-2025 despues de un mensaje de intervalo solia perder el focus
 Sub retardo()
  Dim As Integer d1=0
    Do
@@ -149,6 +150,7 @@ Close 4
  
  
 Do 
+
   Var EV=WaitEvent
    Select Case EV
      Case EventClose
@@ -204,7 +206,7 @@ ThreadWait(H2)
              ''Beep
               
               Var t1= threadCall sub1 (MENSAJE2)
-              
+              setfocus(hwnd)
               INTERVALO2=0
            Else
               INTERVALO2=INTERVALO2+1
