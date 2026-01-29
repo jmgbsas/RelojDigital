@@ -106,7 +106,7 @@ EndIf
 
 End Function
 
-Function entradavalida(esa As string) As Integer
+Function entradavalida( esa As string) As Integer
 ' entrada valida 00:00:00  ó 01:20:18  
 ' Si 3 y 6 no numericas =":"
 ' y  1 2 4 5 7 8 numericos  -> retorna 0 sino retorna 1 no valido
@@ -136,8 +136,10 @@ next i
 
 If resultado=resultadovalido Then
    entradavalida=0
+'Print "entrada valida "
 Else
    entradavalida=1
+'Print "entrada NO valida "
 EndIf
 
 End Function
@@ -241,15 +243,14 @@ ThreadWait(H2)
         If esnumerico(t1)=0 And t1="0" And Len(Trim(HORA))=1 Then
            End
         EndIf
-        If  Len(Trim(t1))=8 Then
+        If  Len(Trim(HORA))=8 Then
         Else
            Continue Do
         EndIf 
  
 ' validamos
         If entradavalida(HORA)=1 Then
-           Continue Do
-        EndIf 
+        Else  
           cntalarmas=cntalarmas+1
           If cntalarmas=21 Then
              cntalarmas=20
@@ -269,6 +270,7 @@ ThreadWait(H2)
           Next j1
           Close 6
           Sleep 100
+       EndIf 
      Case EventTimer 
         TIEMPO1=Time
         If INTERVALO1 > 0 Then
