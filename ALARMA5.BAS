@@ -219,7 +219,7 @@ Do
    Select Case EV
      Case EventClose
              
- default=Str("00:00:00")
+ default=Str("")
        
 Var H=THREADCALL SUB_notepad()
 
@@ -251,25 +251,30 @@ ThreadWait(H2)
 ' validamos
         If entradavalida(HORA)=1 Then
         Else  
-          cntalarmas=cntalarmas+1
-          If cntalarmas=21 Then
-             cntalarmas=20
-             For t1 As Integer=1 To 19
-             alarmas(t1+1)=alarmas(t1)  
-             Next t1
-            alarmas(1)=Trim(HORA)
-          Else 
-            alarmas(cntalarmas)=Trim(HORA) 
-          EndIf
+         cntalarmas=cntalarmas+1
          Var h3 = threadcall submensaje3(MENSAJE3,hwnd)      
-         ThreadWait (h3)    
-         MENSAJES_FIJOS(cntalarmas)=Trim(MENSAJE3)
-          Open "ALARMAS.TXT" For Output As 6
-          For J1 As Integer=1 To cntalarmas
-            Print #6, alarmas(J1);",";MENSAJES_FIJOS(J1) 
-          Next j1
-          Close 6
-          Sleep 100
+         ThreadWait (h3)
+         If MENSAJE3 > "" Then     
+            If cntalarmas=21 Then
+               cntalarmas=20
+               For t1 As Integer=1 To 19
+                 alarmas(t1+1)=alarmas(t1)  
+               Next t1
+               alarmas(1)=Trim(HORA)
+               MENSAJES_FIJOS(1)=Trim(MENSAJE3)
+            Else 
+               alarmas(cntalarmas)=Trim(HORA)
+               MENSAJES_FIJOS(cntalarmas)=Trim(MENSAJE3)
+            EndIf
+            Open "ALARMAS.TXT" For Output As 6
+            For J1 As Integer=1 To cntalarmas
+               Print #6, alarmas(J1);",";MENSAJES_FIJOS(J1) 
+            Next j1
+            Close 6
+            Sleep 100
+         Else
+           cntalarmas=cntalarmas-1
+         EndIf
        EndIf 
      Case EventTimer 
         TIEMPO1=Time
