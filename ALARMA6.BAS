@@ -1,3 +1,4 @@
+'version 6 botones help H  salir X, CARGAR ALARMAS C 
 ' VERSION 5 validacion de hora de alarmas con 0 termina el programa
 ' con cualqueircosa que no sea valida continua, acepta formatos validos
 '  las alarmas grabadas en ALARMAS.TXT se editan en un notepad
@@ -13,7 +14,10 @@
 #include "fbthread.bi"
 #include "vbcompat.bi"
 #include "crt/ctype.bi"
- 
+#Include "fbgfx.bi" 
+#if __FB_LANG__ = "fb"
+Using FB '' Scan code constants are stored in the FB namespace in lang FB
+#EndIf
 '#Include "win/winbase.bi"
 '''declare function GetProcessIdOfThread(byval Thread as HANDLE) as UInteger
 ' AUTOR JOSE GALEANO 14-12-2025 COMO HOBBY Y HERRAMIENTA DE TRABAJAO EN PC 
@@ -159,12 +163,7 @@ Dim As String MENSAJES_FIJOS (1 To 20), MENSAJE3,INTER,OLDALARM
  
 Dim As long ALTO = GetSystemMetrics(SM_CYSCREEN)
 Dim As Long ANCHO= GetSystemMetrics(SM_CXSCREEN)
-MessBox("INFO" ,"ALARMA DIGITAL version 5, SE PROGRAMA TODAS LAS VECES QUE SE DESEE PARA CORTAR " _
-" EL TRABAJO O RECORDAR ALGO, PULSANDO LA HORA DEJA CONFIGURAR MINUTOS Y MENSAJE DEL INTERVALO. " _
-" SI NO SE CONFIGURA O LOS MINUTOS VALEN 0, ES UN RELOJ SIN ALARMA, SI SE PULSA cierre  de vantana [X], " _ 
-" MUESTRA LAS ALARMAS GRABADAS EN DISCO Y CONFIGURA UNA ALARMA EN FORMATO 00:00:00 (hasta 20 alarmas una por vez), " _
-" CON 0 TERMINA EL PROGRAMA. AUTOR Jose Galeano  galeanoj2005@gmail.com") 
-TITULO=InputBox("AJUSTE" ,"TITULO DE LA ALARMA2?  ", TITULO, ES_MULTILINE + ES_AUTOVSCROLL,0 )
+TITULO=InputBox("AJUSTE TITULO" ,"TITULO DE LA ALARMA2?  ", TITULO, ES_MULTILINE + ES_AUTOVSCROLL,0 )
  Dim As Integer x, y, buttons, res ,SALE=0
 ANCHO=ANCHO-252
 ALTO=ALTO-132
@@ -174,8 +173,16 @@ var hwnd= OpenWindow(TITULO,ANCHO,ALTO,260,100,,WS_EX_TOPMOST)
 
  
 SetTimer(hwnd,1,1000,0) ' cada segundo
-ButtonGadget(3,10,10,250,50,"",BS_LEFT  ) ' 240 60
+ButtonGadget(1,sizex-30,1,15,25,"H",BS_RIGHT  ) ' 240 60  help
+ButtonGadget(2,sizex-10,1,15,25,"X",BS_RIGHT  ) 
+ButtonGadget(4,sizex-30,26,15,25,"A",BS_RIGHT  ) ' MUESTRA NOTEPAD PARA EDITAR 
+ButtonGadget(5,sizex-10,26,15,25,"C",BS_RIGHT  ) ' CARGA VALORES DE NOTEPAD
+ 
+' el A usaremos para modificar notepad
+' como boton A y siguientes  futuro
+ButtonGadget(3,1,1,sizex,50,"",BS_LEFT  ) 
 SetGadgetFont(3,CINT(LoadFont("arial",elfont))) 
+
 Var TIEMPO1=Time
 Var TIEMPO2=Time
 Var TIEMPO3=Time
@@ -215,16 +222,15 @@ Close 4
  
  
 Do 
-
   Var EV=WaitEvent
    Select Case EV
      Case EventClose
              
  default=Str("")
        
-Var H=THREADCALL SUB_notepad()
+'''Var H=THREADCALL SUB_notepad()
 
-'HORA=InputBox("CONFIG ALARMAS FIJAS O SALE" ,"HORA EN FORMATO 00:00:00 ", default, ES_MULTILINE + ES_AUTOVSCROLL,hwnd )
+
 Sleep 20
 HORA=default
 Var H2=THREADCALL sub_HORA(HORA,default,hwnd)
@@ -234,7 +240,7 @@ setfocus(hwnd)
 '''pd1= GetProcessIdOfThread(wnd) el linker no lo encuentra UNA MIERCOLES
 ''TerminateProcess (wnd,0) 
 '''ThreadDetach(wnd)
-ThreadDetach(H)
+'''ThreadDetach(H)
 ThreadWait(H2)
   Dim As String t1
         t1=Mid(HORA,1,1)
@@ -331,12 +337,25 @@ ThreadWait(H2)
      Case EventSize 
       ''   ? SizeX & "  " & SizeY
       elfont=SizeX * 30 / 260      
-      ButtonGadget(3,10,10,sizex-10,sizey-10,"",BS_LEFT  ) ' 240 60
+      ButtonGadget(3,1,1,sizex-30,sizey,"",BS_LEFT  ) ' 240 60
       SetGadgetFont(3,CINT(LoadFont("arial",elfont)))
+ButtonGadget(1,sizex-30,1,15,25,"H",BS_RIGHT  ) ' 240 60  help
+ButtonGadget(2,sizex-10,1,15,25,"X",BS_RIGHT  ) ' 240 60  close
+ButtonGadget(4,sizex-30,26,15,25,"A",BS_RIGHT  ) ' MUESTRA NOTEPAD PARA EDITAR 
+ButtonGadget(5,sizex-10,26,15,25,"C",BS_RIGHT  ) ' CARGA VALORES DE NOTEPAD
+
      CASE EventGadget
        Select Case EventNumber
-  ''       Case 1
-   ''         MessBox("","It's WHAT")
+         Case 1 ' boton H help
+    MessBox("INFO" ,"ALARMA DIGITAL version 5.1, SE PROGRAMA TODAS LAS VECES QUE SE DESEE PARA CORTAR " _
+    " EL TRABAJO O RECORDAR ALGO, PULSANDO LA HORA DEJA CONFIGURAR MINUTOS Y MENSAJE DEL INTERVALO. " _
+    " SI NO SE CONFIGURA O LOS MINUTOS VALEN 0, ES UN RELOJ SIN ALARMA, SI SE PULSA CIERRE DE VENTANA [X], " _ 
+    " CONFIGURA UNA ALARMA EN FORMATO 00:00:00 (hasta 20 alarmas una por vez), CON 0 TERMINA EL PROGRAMA. " _
+    " BOTON 'A' MUESTRA LAS ALARMAS GRABADAS EN DISCO CON NOTEPAD Y SE PUEDEN MODIFICAR Y GRABAR,  " _
+    " PARA QUE TENGA EFECTO CARGAR LOS VALORES DE NUEVO PULSANDO BOTON 'C' CARGAR ALARMAS" _
+    " BOTON H MUESTRA ESTE MENSAJE, X SALIR DEL PROGRAMA. AUTOR Jose Galeano  galeanoj2005@gmail.com") 
+         Case 2 ' boton X
+           End
          Case 3  'boton solo cambia intervalo
          MessBox( "",MENSAJE)
          Dim As String default=Str("0")
@@ -354,9 +373,26 @@ ThreadWait(H2)
    Open "INTERVALO.TXT" For Output As 7
    Print #7, MINUTOS;",";MENSAJE2 ' EL Unico y ULTIMO 
    Close 7    
-     Sleep 100        
+     Sleep 100  
+       Case 4 'boton A
+         Var H=THREADCALL SUB_notepad()
+    
        END Select
-   
+       Case 5 ' CARGA DE NUEVO LOS VALORES DEL NOTEPAD ALARMA 
+         Open "ALARMAS.TXT" For Append As 3 ' SINO EXISTE LO CREA
+         Sleep 10
+         Close 3
+         Sleep 10
+         Open "ALARMAS.TXT" For Input As 4 ' SINO EXISTE LO CREA
+         cntalarmas=0
+         Do While Not Eof(4)
+           cntalarmas=cntalarmas+1
+           Input #4, alarmas(cntalarmas), MENSAJES_FIJOS(cntalarmas)
+         Loop
+'SI CNTALARMAS >0 TENEMOS ALGUNAS ALARMAS DEL DIA ANTERIOR
+''''''''
+        Close 4
+
    End Select
    
 Loop 
