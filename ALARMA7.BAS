@@ -21,6 +21,10 @@
 #if __FB_LANG__ = "fb"
 Using FB '' Scan code constants are stored in the FB namespace in lang FB
 #EndIf
+Dim As String PRGDIR
+Dim  As Integer lp=InStrRev(Command(0),"\")
+PRGDIR =Mid(Command(0),1,lp) ' tiene la barra ES DONDE ESTA EL EXE
+
 '#Include "win/winbase.bi"
 '''declare function GetProcessIdOfThread(byval Thread as HANDLE) as UInteger
 ' AUTOR JOSE GALEANO 14-12-2025 COMO HOBBY Y HERRAMIENTA DE TRABAJAO EN PC 
@@ -182,6 +186,10 @@ SetTimer(hwnd,1,1000,0) ' cada segundo
 ButtonGadget(1,sizex-25,1,15,25,"H",BS_RIGHT  ) ' AYUDA
 ButtonGadget(2,sizex-15,1,15,25,"A",BS_RIGHT  ) ' ALARMAS CONFIG
 ButtonGadget(3,1,1,sizex,50,"",BS_LEFT  ) 
+
+''SetGadgetColor(3,255,16777215,3) no funciona colores!!!
+''SetGadgetColor(3,50000,0,1) no funciona colores!!
+
 SetGadgetFont(3,CINT(LoadFont(letra,tamfont))) 
 
 ButtonGadget(4,sizex-25,26,15,25,"N",BS_RIGHT  ) ' MUESTRA NOTEPAD PARA EDITAR 
@@ -212,7 +220,9 @@ Sleep 10
 
 Open "INTERVALO.TXT" For Input As 2 '
 Input #2, INTER, MENSAJE2
-
+If Len(INTER)=1 Then
+INTER="0"+INTER ' NO LE GUSTA UN ALEN DE 1 FALLA DE CINT? NO SE UNA BOSTA
+EndIf
 If MENSAJE2="" Then
    MENSAJE2=MENSAJE1
 Else
@@ -254,7 +264,7 @@ Do
   ' UNO DE LOS RING DE WINDOWS 10, si se pone en el inicio alarma2 y el wav, windows
   ' ejecuta el wav incha pelota, cambiamos la extension del wav a ver si funciona aca
   ' y si win se deja de inchar las pelotas...jaja
-              PlaySound(".\Ring05.wav", 0, SND_FILENAME+SND_NODEFAULT +SND_ASYNC)
+              PlaySound(PRGDIR + "Ring05.wav", 0, SND_FILENAME+SND_NODEFAULT +SND_ASYNC)
              ''Beep
               
               Var t1= threadCall sub1 (MENSAJE2)
@@ -282,7 +292,7 @@ Do
               For i1 As Integer=1 To cntalarmas
 
                 If TIEMPO1=alarmas(i1) Or TIEMPO2=alarmas(i1) Or TIEMPO3=alarmas(i1)Then
-                   PlaySound(".\Alarm06.wav", 0, SND_FILENAME+SND_NODEFAULT +SND_ASYNC)
+                   PlaySound(PRGDIR+"Alarm06.wav", 0, SND_FILENAME+SND_NODEFAULT +SND_ASYNC)
                    If OLDALARM <> alarmas(i1) Then ' SOLO UN MSGBOX SONIDO PUEDE SER MAS
                       Var t2= ThreadCall  sub2 (MENSAJES_FIJOS(i1))
                    EndIf
@@ -405,9 +415,14 @@ ThreadWait(H2)
          INTERVALO1=CInt(MINUTOS)*60 'en  segundo
          INTERVALO2=0
    Open "INTERVALO.TXT" For Output As 7
-   Print #7, MINUTOS;",";MENSAJE2 ' EL Unico y ULTIMO 
+   If LEN (Trim(MINUTOS))=1 Then 'SI LA LEN ES 1 NO FUNCIONA, DEBE SER 01 EN VEZ DE 1 COSA DEL BASIC DE MIERDA JAJAJA
+      MINUTOS="0"+MINUTOS
+   EndIf
+   Print #7, MINUTOS;",";MENSAJE2 ' EL Unico y ULTIMO
+   FILEFLUSH(-1)
+   Sleep 50 
    Close 7    
-     Sleep 100  
+     Sleep 50  
        Case 4 'boton A
          Var H=THREADCALL SUB_notepad()
     
