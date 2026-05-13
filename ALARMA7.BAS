@@ -297,7 +297,7 @@ Do
               For i1 As Integer=1 To cntalarmas
 
                 If TIEMPO1=alarmas(i1) Or TIEMPO2=alarmas(i1) Or TIEMPO3=alarmas(i1)Then
-                   If SONIDOSIONO=0 Then
+                   If SONIDOSIONO=TRUE Then
                     PlaySound(PRGDIR+"Alarm06.wav", 0, SND_FILENAME+SND_NODEFAULT +SND_ASYNC)
                    EndIf
                    If OLDALARM <> alarmas(i1) Then ' SOLO UN MSGBOX SONIDO PUEDE SER MAS
