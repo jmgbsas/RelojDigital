@@ -1,3 +1,4 @@
+'VERSION 7.1 Boton S muestra si hay sonido o no Verde=sonido, rojo=sin sonido.
 'version 7 mas botones como los botones help H  salir X, CARGAR ALARMAS C
 'REORGANIZAR BOTONES X DE VENTANA SERA cLOSE COMO DEBE SER Y MI X NUEVA  HARA LO QUE
 ' AHORA ESTABA EN CLOSE
@@ -154,16 +155,21 @@ Else
 EndIf
 
 End Function
-'///////////////////////////////////////////////////////////
+
+'////////////////////////////P R O G R A M A  P R I N C I P A L ///////////////////////////////
+
+
 Dim As string alarmas(1 To 20), HORA="00:00:00" 
 For X As Integer=1 To 20
     alarmas(x)="0"
 Next X
 Dim As Integer tamfont=30, INTERVALO1=0,INTERVALO2=0,cntalarmas=0,HAYINTERVALO=0
+Dim As BOOLEAN   VERDAD=TRUE, SONIDOSIONO=TRUE
 Dim As String MINUTOS="0" ,TITULO=Format(NOW,"dd/mm/yyyy")
 Dim As Long result = Weekday( Now) ''' [, firstdayofweek ] )
-Dim As String dia = diaw(result), letra="arial"
-TITULO=TITULO+" "+dia
+Dim As String dia = diaw(result), letra="arial", TITULOBKP
+TITULO=TITULO+" "+dia  'S SONIDO
+TITULOBKP=TITULO
 Dim As String MENSAJE=" ACEPTE, LUEGO ENTRE INTERVALO Y MENSAJE.",MENSAJE1
 Dim As String MENSAJE2 ="DESCANSE UN POCO ..",windir, default=Str("0")
 Dim As String MENSAJES_FIJOS (1 To 20), MENSAJE3,INTER,OLDALARM
@@ -172,11 +178,11 @@ Dim As long ALTO = GetSystemMetrics(SM_CYSCREEN)
 Dim As Long ANCHO= GetSystemMetrics(SM_CXSCREEN)
 TITULO=InputBox("AJUSTE TITULO" ,"TITULO DE LA ALARMA2?  ", TITULO, ES_MULTILINE + ES_AUTOVSCROLL,0 )
  Dim As Integer x, y, buttons, res ,SALE=0
-ANCHO=ANCHO-252
-ALTO=ALTO-132
+ANCHO=ANCHO-315
+ALTO=ALTO-120
 ''300,10,260,100,,WS_EX_TOPMOST
-var hwnd= OpenWindow(TITULO,ANCHO,ALTO,260,100,,WS_EX_TOPMOST)
-
+var hwnd= OpenWindow(TITULO,ANCHO,ALTO,320,90,,WS_EX_TOPMOST)
+WindowColor(hwnd,BGR(0,255,0))
 
  
 SetTimer(hwnd,1,1000,0) ' cada segundo
@@ -185,26 +191,24 @@ SetTimer(hwnd,1,1000,0) ' cada segundo
 
 ButtonGadget(1,sizex-25,1,15,25,"H",BS_RIGHT  ) ' AYUDA
 ButtonGadget(2,sizex-15,1,15,25,"A",BS_RIGHT  ) ' ALARMAS CONFIG
-ButtonGadget(3,1,1,sizex,50,"",BS_LEFT  ) 
+Var hbtn3 = ButtonGadget(3,1,1,sizex,50,"",BS_LEFT  ) 
 
-''SetGadgetColor(3,255,16777215,3) no funciona colores!!!
-''SetGadgetColor(3,50000,0,1) no funciona colores!!
 
 SetGadgetFont(3,CINT(LoadFont(letra,tamfont))) 
 
 ButtonGadget(4,sizex-25,26,15,25,"N",BS_RIGHT  ) ' MUESTRA NOTEPAD PARA EDITAR 
 ButtonGadget(5,sizex-15,26,15,25,"V",BS_RIGHT  ) ' CARGA VALORES DE NOTEPAD
-ButtonGadget(6,sizex-25,51,15,25,"C",BS_RIGHT  ) ' podria  ser colores de la hora 
-ButtonGadget(7,sizex-15,51,15,25,"F",BS_RIGHT  ) ' podria ser color fondo
-ButtonGadget(8,sizex-25,76,15,25,"L",BS_RIGHT  ) ' podria ser Tipo de letra
-ButtonGadget(9,sizex-15,76,15,25,"T",BS_RIGHT  ) ' podria ser Tamaño de letra 
+ButtonGadget(6,sizex-25,51,15,25,"S",BS_RIGHT  ) ' SONIDO VERDE, SIN SONIDO ROJO 
+ButtonGadget(7,sizex-15,51,15,25,"F",BS_RIGHT  ) '
+ButtonGadget(8,sizex-25,76,15,25,"T",BS_RIGHT  ) ' podria ser Tipo de letra
+ButtonGadget(9,sizex-15,76,15,25,"L",BS_RIGHT  )  
 
 GadgetToolTip(1,"AYUDA ")
 GadgetToolTip(2,"CONFIGURACION 20 ALARMAS ")
 GadgetToolTip(3,"CONFIGURACION DEL INTERVALO ")
 GadgetToolTip(4,"NOTEPAD MUESTRA/MODIFICA ALARMAS ")
 GadgetToolTip(5,"CARGA ALARMAS CAMBIADAS EN NOTEPAD ")
-GadgetToolTip(6,"(NI)NO IMPLEMENT,COLOR DE LETRAS")
+GadgetToolTip(6,"SONIDO SI O NO ")
 GadgetToolTip(7,"(NI)FONDO DE LETRA ")
 GadgetToolTip(8,"(NI)TIPO DE LETRA ")
 GadgetToolTip(9,"(NI)TAMAÑO LETRA")
@@ -249,22 +253,25 @@ Loop
 ''''''''
 Close 4
  
- 
+'------------------------------LOOP--PRINCIPAL--------------------- 
 Do 
   Var EV=WaitEvent
    Select Case EV
      Case EventClose
          End
-        
+'-------------------------        
      Case EventTimer 
         TIEMPO1=Time
+        
         If INTERVALO1 > 0 Then
            HAYINTERVALO=1
-           If INTERVALO2=INTERVALO1 Then
+           If INTERVALO2=INTERVALO1  Then
   ' UNO DE LOS RING DE WINDOWS 10, si se pone en el inicio alarma2 y el wav, windows
   ' ejecuta el wav incha pelota, cambiamos la extension del wav a ver si funciona aca
   ' y si win se deja de inchar las pelotas...jaja
+              If SONIDOSIONO=TRUE Then
               PlaySound(PRGDIR + "Ring05.wav", 0, SND_FILENAME+SND_NODEFAULT +SND_ASYNC)
+              EndIf
              ''Beep
               
               Var t1= threadCall sub1 (MENSAJE2)
@@ -277,7 +284,6 @@ Do
         Else
            HAYINTERVALO=0
            TIEMPO2=Time 
-             SetGadgetText (3,Str(TIEMPO2)+" "+dia) 
         EndIf
             
 ''         SetGadgetText (3,Str(TIEMPO))
@@ -285,14 +291,15 @@ Do
            result=weekday (Now)           
            dia=diaw(result)
            TITULO=Format(NOW,"dd/mm/yyyy")+dia
- 
            SetWindowText(hwnd, TITULO)
         Else
            If alarmas(1)<>"" Then
               For i1 As Integer=1 To cntalarmas
 
                 If TIEMPO1=alarmas(i1) Or TIEMPO2=alarmas(i1) Or TIEMPO3=alarmas(i1)Then
-                   PlaySound(PRGDIR+"Alarm06.wav", 0, SND_FILENAME+SND_NODEFAULT +SND_ASYNC)
+                   If SONIDOSIONO=0 Then
+                    PlaySound(PRGDIR+"Alarm06.wav", 0, SND_FILENAME+SND_NODEFAULT +SND_ASYNC)
+                   EndIf
                    If OLDALARM <> alarmas(i1) Then ' SOLO UN MSGBOX SONIDO PUEDE SER MAS
                       Var t2= ThreadCall  sub2 (MENSAJES_FIJOS(i1))
                    EndIf
@@ -306,34 +313,35 @@ Do
            EndIf
            
         EndIf
-  
-     Case EventSize 
+'-------------------------------------------------------
+     Case EventSize  
       ''   ? SizeX & "  " & SizeY
-      tamfont=SizeX * 30 / 260      
-      ButtonGadget(3,1,1,sizex-30,sizey,"",BS_LEFT  ) ' 240 60
-      SetGadgetFont(3,CINT(LoadFont(letra,tamfont)))
-ButtonGadget(1,sizex-25,1,15,25,"H",BS_RIGHT  ) ' AYUDA
-ButtonGadget(2,sizex-15,1,15,25,"A",BS_RIGHT  ) ' ALARMAS CONFIG
-ButtonGadget(4,sizex-25,26,15,25,"N",BS_RIGHT  ) ' MUESTRA NOTEPAD PARA EDITAR 
-ButtonGadget(5,sizex-15,26,15,25,"V",BS_RIGHT  ) ' CARGA VALORES DE NOTEPAD
-ButtonGadget(6,sizex-25,51,15,25,"C",BS_RIGHT  ) ' podria  ser colores de la hora 
-ButtonGadget(7,sizex-15,51,15,25,"F",BS_RIGHT  ) ' podria ser color fondo
-ButtonGadget(8,sizex-25,76,15,25,"L",BS_RIGHT  ) ' podria ser Tipo de letra
-ButtonGadget(9,sizex-15,76,15,25,"T",BS_RIGHT  ) ' podria ser Tamaño de letra 
-GadgetToolTip(1,"AYUDA ")
-GadgetToolTip(2,"CONFIGURACION 20 ALARMAS ")
-GadgetToolTip(3,"CONFIGURACION DEL INTERVALO ")
-GadgetToolTip(4,"NOTEPAD MUESTRA/MODIFICA ALARMAS ")
-GadgetToolTip(5,"CARGA ALARMAS CAMBIADAS EN NOTEPAD ")
-GadgetToolTip(6,"(NI)NO IMPLEMENT,COLOR DE LETRAS")
-GadgetToolTip(7,"(NI)FONDO DE LETRA ")
-GadgetToolTip(8,"(NI)TIPO DE LETRA ")
-GadgetToolTip(9,"(NI)TAMAÑO LETRA")
-
+        tamfont=SizeX * 30 / 260      
+        ButtonGadget(3,1,1,sizex-30,sizey,"",BS_LEFT  ) ' 240 60
+        SetGadgetFont(3,CINT(LoadFont(letra,tamfont)))
+        ButtonGadget(1,sizex-25,1,15,25,"H",BS_RIGHT  ) ' AYUDA
+        ButtonGadget(2,sizex-15,1,15,25,"A",BS_RIGHT  ) ' ALARMAS CONFIG
+        ButtonGadget(4,sizex-25,26,15,25,"N",BS_RIGHT  ) ' MUESTRA NOTEPAD PARA EDITAR 
+        ButtonGadget(5,sizex-15,26,15,25,"V",BS_RIGHT  ) ' CARGA VALORES DE NOTEPAD
+        ButtonGadget(6,sizex-25,51,15,25,"S",BS_RIGHT  ) ' SONIDO VERDE, SIN SONIDO ROJO
+        ButtonGadget(7,sizex-15,51,15,25,"F",BS_RIGHT  ) 
+        ButtonGadget(8,sizex-25,76,15,25,"T",BS_RIGHT  ) ' podria ser Tipo de letra
+        ButtonGadget(9,sizex-15,76,15,25,"L",BS_RIGHT  ) ' podria ser Tamaño de letra 
+        GadgetToolTip(1,"AYUDA ")
+        GadgetToolTip(2,"CONFIGURACION 20 ALARMAS ")
+        GadgetToolTip(3,"CONFIGURACION DEL INTERVALO ")
+        GadgetToolTip(4,"NOTEPAD MUESTRA/MODIFICA ALARMAS ")
+        GadgetToolTip(5,"CARGA ALARMAS CAMBIADAS EN NOTEPAD ")
+        GadgetToolTip(6,"SONIDO SI O NO ")
+        GadgetToolTip(7,"(NI)FONDO DE LETRA ")
+        GadgetToolTip(8,"(NI)TIPO DE LETRA ")
+        GadgetToolTip(9,"(NI)TAMAÑO LETRA")
+'---------------------------------------------------
      CASE EventGadget
+'..................................................
        Select Case EventNumber
          Case 1 ' boton H help
-    MessBox("INFO" ,"ALARMA DIGITAL version 5.1, SE PROGRAMA TODAS LAS VECES QUE SE DESEE PARA CORTAR " _
+    MessBox("INFO" ,"ALARMA DIGITAL version 7.1, SE PROGRAMA TODAS LAS VECES QUE SE DESEE PARA CORTAR " _
     " EL TRABAJO O RECORDAR ALGO, PULSANDO LA HORA DEJA CONFIGURAR MINUTOS Y MENSAJE DEL INTERVALO. " _
     " SI NO SE CONFIGURA O LOS MINUTOS VALEN 0, ES UN RELOJ SIN ALARMA, SI SE PULSA CIERRE DE VENTANA [X], " _ 
     " CONFIGURA UNA ALARMA EN FORMATO 00:00:00 (hasta 20 alarmas una por vez), CON 0 TERMINA EL PROGRAMA. " _
@@ -341,108 +349,106 @@ GadgetToolTip(9,"(NI)TAMAÑO LETRA")
     " PARA QUE TENGA EFECTO CARGAR LOS VALORES DE NUEVO PULSANDO BOTON 'C' CARGAR ALARMAS" _
     " BOTON H MUESTRA ESTE MENSAJE, X SALIR DEL PROGRAMA. AUTOR Jose Galeano  galeanoj2005@gmail.com") 
          Case 2 ' boton X CAMBIAMOS CON LA DE CLOSE
- default=Str("")
-       
-'''Var H=THREADCALL SUB_notepad()
-
-
-Sleep 20
-HORA=default
-Var H2=THREADCALL sub_HORA(HORA,default,hwnd)
-setfocus(hwnd)
-''''Dim As HWND wnd = FindWindow("notepad.exe",NULL)
-''' Dim As UInteger pd1
-'''pd1= GetProcessIdOfThread(wnd) el linker no lo encuentra UNA MIERCOLES
-''TerminateProcess (wnd,0) 
-'''ThreadDetach(wnd)
-'''ThreadDetach(H)
-ThreadWait(H2)
-  Dim As String t1
-        t1=Mid(HORA,1,1)
-        If esnumerico(t1)=1 And t1="" And Len(Trim(HORA))=1 Then
-           Continue  Do ' sigue no hace nada
-        EndIf 
-        If esnumerico(t1)=0 And t1="0" And Len(Trim(HORA))=1 Then
-           End
-        EndIf
-        If  Len(Trim(HORA))=8 Then
-        Else
-           Continue Do
-        EndIf 
+           default=Str("")
+           Sleep 20
+           HORA=default
+           Var H2=THREADCALL sub_HORA(HORA,default,hwnd)
+           setfocus(hwnd)
+           ThreadWait(H2)
+           Dim As String t1
+           t1=Mid(HORA,1,1)
+           If esnumerico(t1)=1 And t1="" And Len(Trim(HORA))=1 Then
+              Continue  Do ' sigue no hace nada
+           EndIf 
+           If esnumerico(t1)=0 And t1="0" And Len(Trim(HORA))=1 Then
+              End
+           EndIf
+           If  Len(Trim(HORA))=8 Then
+           Else
+             Continue Do
+           EndIf 
  
-' validamos
-        If entradavalida(HORA)=1 Then
-        Else  
-         cntalarmas=cntalarmas+1
-         Var h3 = threadcall submensaje3(MENSAJE3,hwnd)      
-         ThreadWait (h3)
-         If MENSAJE3 > "" Then     
-            If cntalarmas=21 Then
-               cntalarmas=20
-               For t1 As Integer=1 To 19
-                 alarmas(t1+1)=alarmas(t1)  
-               Next t1
-               alarmas(1)=Trim(HORA)
-               MENSAJES_FIJOS(1)=Trim(MENSAJE3)
-            Else 
-               alarmas(cntalarmas)=Trim(HORA)
-               MENSAJES_FIJOS(cntalarmas)=Trim(MENSAJE3)
-            EndIf
-            Open "ALARMAS.TXT" For Output As 6
-            For J1 As Integer=1 To cntalarmas
-               Print #6, alarmas(J1);",";MENSAJES_FIJOS(J1) 
-            Next j1
-            Close 6
-            Sleep 100
-         Else
-           cntalarmas=cntalarmas-1
-         EndIf
-       EndIf 
-
-
+      ' validamos
+           If entradavalida(HORA)=1 Then
+           Else  
+              cntalarmas=cntalarmas+1
+              Var h3 = threadcall submensaje3(MENSAJE3,hwnd)      
+              ThreadWait (h3)
+              If MENSAJE3 > "" Then     
+                 If cntalarmas=21 Then
+                    cntalarmas=20
+                    For t1 As Integer=1 To 19
+                       alarmas(t1+1)=alarmas(t1)  
+                    Next t1
+                    alarmas(1)=Trim(HORA)
+                     MENSAJES_FIJOS(1)=Trim(MENSAJE3)
+                 Else 
+                     alarmas(cntalarmas)=Trim(HORA)
+                     MENSAJES_FIJOS(cntalarmas)=Trim(MENSAJE3)
+                 EndIf
+                 Open "ALARMAS.TXT" For Output As 6
+                 For J1 As Integer=1 To cntalarmas
+                    Print #6, alarmas(J1);",";MENSAJES_FIJOS(J1) 
+                 Next j1
+                 Close 6
+                 Sleep 100
+              Else
+                 cntalarmas=cntalarmas-1
+              EndIf
+           EndIf 
+'--------------------
          Case 3  'boton solo cambia intervalo
-         MessBox( "",MENSAJE)
-         Dim As String default=Str("0")
-         If INTERVALO1 > 0 Then
-            default=Str(MINUTOS)
-         EndIf
+            MessBox( "",MENSAJE)
+            Dim As String default=Str("0")
+            If INTERVALO1 > 0 Then
+               default=Str(MINUTOS)
+            EndIf
             
-         MINUTOS=InputBox("CONFIG ALARMA" ,"INTERVALO EN MINUTOS ", default, ES_MULTILINE + ES_AUTOVSCROLL,hwnd )
-         If INTERVALO1=0 Then
-            MENSAJE2=MENSAJE1
-         EndIf
-         MENSAJE2=InputBox("MENSAJE" ,"CAMBIE O ACEPTE EL MENSAJE ", MENSAJE2, ES_MULTILINE + ES_AUTOVSCROLL,hwnd )     
-         INTERVALO1=CInt(MINUTOS)*60 'en  segundo
-         INTERVALO2=0
-   Open "INTERVALO.TXT" For Output As 7
-   If LEN (Trim(MINUTOS))=1 Then 'SI LA LEN ES 1 NO FUNCIONA, DEBE SER 01 EN VEZ DE 1 COSA DEL BASIC DE MIERDA JAJAJA
-      MINUTOS="0"+MINUTOS
-   EndIf
-   Print #7, MINUTOS;",";MENSAJE2 ' EL Unico y ULTIMO
-   FILEFLUSH(-1)
-   Sleep 50 
-   Close 7    
-     Sleep 50  
-       Case 4 'boton A
-         Var H=THREADCALL SUB_notepad()
-    
-       END Select
-       Case 5 ' CARGA DE NUEVO LOS VALORES DEL NOTEPAD ALARMA 
-         Open "ALARMAS.TXT" For Append As 3 ' SINO EXISTE LO CREA
-         Sleep 10
-         Close 3
-         Sleep 10
-         Open "ALARMAS.TXT" For Input As 4 ' SINO EXISTE LO CREA
-         cntalarmas=0
-         Do While Not Eof(4)
-           cntalarmas=cntalarmas+1
-           Input #4, alarmas(cntalarmas), MENSAJES_FIJOS(cntalarmas)
-         Loop
+            MINUTOS=InputBox("CONFIG ALARMA" ,"INTERVALO EN MINUTOS ", default, ES_MULTILINE + ES_AUTOVSCROLL,hwnd )
+            If INTERVALO1=0 Then
+               MENSAJE2=MENSAJE1
+            EndIf
+            MENSAJE2=InputBox("MENSAJE" ,"CAMBIE O ACEPTE EL MENSAJE ", MENSAJE2, ES_MULTILINE + ES_AUTOVSCROLL,hwnd )     
+            INTERVALO1=CInt(MINUTOS)*60 'en  segundo
+            INTERVALO2=0
+            Open "INTERVALO.TXT" For Output As 7
+            If LEN (Trim(MINUTOS))=1 Then 'SI LA LEN ES 1 NO FUNCIONA, DEBE SER 01 EN VEZ DE 1 COSA DEL BASIC DE MIERDA JAJAJA
+               MINUTOS="0"+MINUTOS
+            EndIf
+            Print #7, MINUTOS;",";MENSAJE2 ' EL Unico y ULTIMO
+            FILEFLUSH(-1)
+            Sleep 50 
+            Close 7    
+            Sleep 50
+'----------------  
+         Case 4 'boton A
+            Var H=THREADCALL SUB_notepad()
+         Case 5 ' CARGA DE NUEVO LOS VALORES DEL NOTEPAD ALARMA 
+            Open "ALARMAS.TXT" For Append As 3 ' SINO EXISTE LO CREA
+            Sleep 10
+            Close 3
+            Sleep 10
+            Open "ALARMAS.TXT" For Input As 4 ' SINO EXISTE LO CREA
+            cntalarmas=0
+            Do While Not Eof(4)
+              cntalarmas=cntalarmas+1
+              Input #4, alarmas(cntalarmas), MENSAJES_FIJOS(cntalarmas)
+            Loop
 'SI CNTALARMAS >0 TENEMOS ALGUNAS ALARMAS DEL DIA ANTERIOR
 ''''''''
-        Close 4
+            Close 4
+         Case 6 ' SONIDO SI O NO SONIDOSIONO con colores en 6 text
+         ''Print "viendo la salida "    
+          ''ButtonGadget(6,sizex-25,51,15,25,"S",BS_RIGHT  ) ' SONIDO SI O NO
+            SONIDOSIONO=SONIDOSIONO Xor VERDAD
+            If SONIDOSIONO=TRUE Then
+               WindowColor(hwnd,BGR(0,255,0))
+            Else 
+               WindowColor(hwnd,BGR(255,0,0))
+            EndIf
+         Case 7
 
+      End Select
    End Select
-   
-Loop 
+Loop ''FIN LOOP PRINCIPAL
 End
