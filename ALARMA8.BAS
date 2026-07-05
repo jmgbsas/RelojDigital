@@ -18,7 +18,7 @@ PRGDIR =Mid(Command(0),1,lp) ' tiene la barra ES DONDE ESTA EL EXE
 Dim Shared As String * 9 diasemana(1 To 7) ={"DOMINGO","LUNES","MARTES","MIERCOLES","JUEVES","VIERNES","SABADO"}
 Dim Shared As String MENSAJES_FIJOS (1 To 20), MENSAJE3,INTER,OLDALARM 
 
-
+winexec ("ie4uinit.exe -show",00) 'refresca el cache de iconos
 '#Include "win/winbase.bi"
 '''declare function GetProcessIdOfThread(byval Thread as HANDLE) as UInteger
 ' AUTOR JOSE GALEANO 14-12-2025 COMO HOBBY Y HERRAMIENTA DE TRABAJAO EN PC 
@@ -180,6 +180,7 @@ End Function
 
 '////////////////////////////P R O G R A M A  P R I N C I P A L ///////////////////////////////
 
+SetRunOnlyExe()
 
 Dim As string alarmas(1 To 20), HORA="00:00:00" 
 For X As Integer=1 To 20
