@@ -222,7 +222,7 @@ SetGadgetFont(3,CINT(LoadFont(letra,tamfont)))
 ButtonGadget(4,sizex-25,26,15,25,"N",BS_RIGHT  ) ' MUESTRA NOTEPAD PARA EDITAR 
 ButtonGadget(5,sizex-15,26,15,25,"V",BS_RIGHT  ) ' CARGA VALORES DE NOTEPAD
 ButtonGadget(6,sizex-25,51,15,25,"S",BS_RIGHT  ) ' SONIDO VERDE, SIN SONIDO ROJO 
-ButtonGadget(7,sizex-15,51,15,25,"F",BS_RIGHT  ) '
+ButtonGadget(7,sizex-15,51,15,25,"R",BS_RIGHT  ) '
 ButtonGadget(8,sizex-25,76,15,25,"T",BS_RIGHT  ) ' podria ser Tipo de letra
 ButtonGadget(9,sizex-15,76,15,25,"L",BS_RIGHT  )  
 
@@ -232,7 +232,7 @@ GadgetToolTip(3,"CONFIGURACION DEL INTERVALO ")
 GadgetToolTip(4,"NOTEPAD MUESTRA/MODIFICA ALARMAS ")
 GadgetToolTip(5,"CARGA ALARMAS CAMBIADAS EN NOTEPAD ")
 GadgetToolTip(6,"SONIDO SI O NO ")
-GadgetToolTip(7,"(NI)FONDO DE LETRA ")
+GadgetToolTip(7,"BORRADO DE INTERVALO ")
 GadgetToolTip(8,"(NI)TIPO DE LETRA ")
 GadgetToolTip(9,"(NI)TAMAÑO LETRA")
 
@@ -354,7 +354,7 @@ Do
         ButtonGadget(4,sizex-25,26,15,25,"N",BS_RIGHT  ) ' MUESTRA NOTEPAD PARA EDITAR 
         ButtonGadget(5,sizex-15,26,15,25,"V",BS_RIGHT  ) ' CARGA VALORES DE NOTEPAD
         ButtonGadget(6,sizex-25,51,15,25,"S",BS_RIGHT  ) ' SONIDO VERDE, SIN SONIDO ROJO
-        ButtonGadget(7,sizex-15,51,15,25,"F",BS_RIGHT  ) 
+        ButtonGadget(7,sizex-15,51,15,25,"R",BS_RIGHT  ) ' RESET INTERVALO A NADA
         ButtonGadget(8,sizex-25,76,15,25,"T",BS_RIGHT  ) ' podria ser Tipo de letra
         ButtonGadget(9,sizex-15,76,15,25,"L",BS_RIGHT  ) ' podria ser Tamaño de letra 
         GadgetToolTip(1,"AYUDA ")
@@ -363,7 +363,7 @@ Do
         GadgetToolTip(4,"NOTEPAD MUESTRA/MODIFICA ALARMAS ")
         GadgetToolTip(5,"CARGA ALARMAS CAMBIADAS EN NOTEPAD ")
         GadgetToolTip(6,"SONIDO SI O NO ")
-        GadgetToolTip(7,"(NI)FONDO DE LETRA ")
+        GadgetToolTip(7,"BORRADO DE INTERVALO  ")
         GadgetToolTip(8,"(NI)TIPO DE LETRA ")
         GadgetToolTip(9,"(NI)TAMAÑO LETRA")
 '---------------------------------------------------
@@ -378,6 +378,8 @@ Do
     " EL BOTON N EDITA CON NOTEPAD LAS ALARMAS, SE PUEDEN MODIFICAR Y GRABAR,  " _
     " PARA QUE TENGA EFECTO CARGAR LOS VALORES DE NUEVO PULSANDO BOTON 'V' CARGAR ALARMAS" _
     " SI EL MENSAJE CONTIEN EL NOMBRE DE UN DIA DE LA SEMANA SOLO SE LO MOSTRARA EN ESE DIA "_
+    " BOTON R: BORRA EL INTERVALO. BOTON S : CON SONIDO (FONDO VERDE  )O SIN SONIDO( FONDO ROJO) "_
+    " PARA ACEDER A LOS OTROS BOTONES COMO R Y S MAXIMIZAR LA VENTANA "_ 
     " BOTON H MUESTRA ESTE MENSAJE, CERRAR VENTANA SALE DEL PROGRAMA O INGRESANDO UN 0 AL INGRESAR " _
     " LA HORA DE UNA NUEVA ALARMA. AUTOR Jose Galeano  galeanoj2005@gmail.com") 
          Case 2 ' boton A CAMBIAMOS CON LA DE CLOSE
@@ -488,7 +490,9 @@ Do
                WindowColor(hwnd,BGR(255,0,0))
             EndIf
          Case 7
-
+            Kill "INTERVALO.TXT"
+            INTERVALO1=0
+            INTERVALO2=0
       End Select
    End Select
 Loop ''FIN LOOP PRINCIPAL
