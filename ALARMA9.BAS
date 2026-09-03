@@ -149,7 +149,7 @@ For i4=1 To 7
  diastring=Trim(diasemana (i4))
 
  If InStr (UCase(MENSAJE), diastring ) > 0 Then ''encontre un dia en el mensaje
-   Print "ENCONTRO EL DIA ",diastring, i4
+   ''Print "ENCONTRO EL DIA ",diastring, i4
     NRO=i4
     DIA=DIASTRING 
     Exit For
@@ -246,7 +246,7 @@ GadgetToolTip(9,"(NI)TAMAÑO LETRA")
 Var TIEMPO1=Time
 Var TIEMPO2=Time
 Var TIEMPO3=Time
-Open "DEBUG.TXT"  For Output As 10  '''' DEBUG DE SALIDA 
+'''Open "DEBUG.TXT"  For Output As 10  '''' DEBUG DE SALIDA 
 Open "INTERVALOS.TXT" For APPEND As 1 ' SINO EXISTE LO CREA
 Sleep 10
 Close 1
@@ -263,9 +263,9 @@ If Len(intervalosvec(cntinter))=1 Then
 EndIf
 
   If FDIAVALIDO(cntinter, MENSAJES_FIJOS_INTER(cntinter)) Then
-      Print #10,MENSAJES_FIJOS_INTER(cntinter) + " <= ok ES para el dia de hoy"
+      'Print #10,MENSAJES_FIJOS_INTER(cntinter) + " <= ok ES para el dia de hoy"
   Else
-      Print #10, MENSAJES_FIJOS_INTER(cntinter) + " <= No es para el dia de hoy"
+      'Print #10, MENSAJES_FIJOS_INTER(cntinter) + " <= No es para el dia de hoy"
       intervalosvec(cntinter)="" : MENSAJES_FIJOS_INTER(cntinter)=""
       cntinter=cntinter-1
   EndIf
@@ -312,7 +312,7 @@ Close 4
 INTERVALO2=INTERVALO1 ' cintinter=1 INICIAMOS CON EL MENSAJE DE LO QUE COMUNICAOS COMO CAMINAR 5 MINUTOS
 ' LUEGO DE TERMINADO ESA CAMINATA ENVIAMOS OTRO MENSAJE TRABAJAR POR 20 MIN POR EJEMPLO
 '------------------------------LOOP--PRINCIPAL--------------------- 
-Print #10, " maxcntinter ";maxcntinter
+''Print #10, " maxcntinter ";maxcntinter
 Do 
   Var EV=WaitEvent
    Select Case EV
@@ -323,20 +323,20 @@ Do
         TIEMPO1=Time
         fileflush(-1)
         If INTERVALO1 > 0 Then
-          Print #10, "1) INTERVALO1 > 0,,,INTERVALO1 INTERVALO2 ";INTERVALO1, INTERVALO2
+          ''Print #10, "1) INTERVALO1 > 0,,,INTERVALO1 INTERVALO2 ";INTERVALO1, INTERVALO2
            HAYINTERVALO=1
            If  INTERVALO2=INTERVALO1 Then
-              Print #10, "2) INTERVALO1=INTERVALO2, cntinter ";INTERVALO1, INTERVALO2, cntinter
+              ''Print #10, "2) INTERVALO1=INTERVALO2, cntinter ";INTERVALO1, INTERVALO2, cntinter
                If cntinter > 1 Then
 ' ---PASAMOS AL OTRO INTERVALO SECUENCIAL-------------------------------------
-                   Print #10, "3) CNTINTER > 1 "; cntinter 
+                   ''Print #10, "3) CNTINTER > 1 "; cntinter 
                    If cntinter > maxcntinter Then  '' loopemos los intervalos
-                     Print #10, " Reinicio cntinter > max "
+                     ''Print #10, " Reinicio cntinter > max "
                       cntinter=1
                    EndIf  
                    MINUTOS=Trim(intervalosvec(cntinter))
                    INTERVALO1=CInt(MINUTOS)*60
-                   Print #10, "4) INTERVALO1 ";INTERVALO1
+                   ''Print #10, "4) INTERVALO1 ";INTERVALO1
                EndIf 
   ' UNO DE LOS RING DE WINDOWS 10, si se pone en el inicio alarma2 y el wav, windows
   ' ejecuta el wav incha pelota, cambiamos la extension del wav a ver si funciona aca
@@ -369,19 +369,19 @@ Do
               INTERVALO2=INTERVALO2+1
               SetGadgetText (3,Str(TIEMPO1)+" "+dia)
               If INTERVALO1=INTERVALO2 Then
-                 Print #10, "  INTERVALO1=INTERVALO2  "
+                 ''Print #10, "  INTERVALO1=INTERVALO2  "
                  cntinter=cntinter+1
                  If cntinter> maxcntinter Then
                     cntinter=1
                  EndIf
                  MINUTOS=Trim(intervalosvec(cntinter))
                  INTERVALO1=CInt(MINUTOS)*60
-                  Print #10, " cntinter,  INTERVALO1  "; cntinter,  INTERVALO1           
+                  ''Print #10, " cntinter,  INTERVALO1  "; cntinter,  INTERVALO1           
               EndIf
            EndIf
         Else
            HAYINTERVALO=0
-           Print #10, "HAYINTERVALO=0 "
+           ''Print #10, "HAYINTERVALO=0 "
            TIEMPO2=Time 
         EndIf
             
@@ -506,53 +506,38 @@ Do
             cntinter=1
             Open "INTERVALOS.TXT" For Output As 7    
             Do 
-                Print #10,"cntinter ";cntinter 
-Print #10," 1 "
+
                 MINUTOS=Trim(intervalosvec(cntinter))
-Print #10," 2 "
                 INTERVALO1=CInt(MINUTOS)*60
-Print #10," 3 "
                 If INTERVALO1 > 0 Then
-Print #10," 4 "
                    default=MINUTOS
-Print #10," 5 "
                 EndIf
-Print #10," 6 "            
+         
                 MINUTOS=InputBox("CONFIG ALARMA" ,"INTERVALO EN MINUTOS ", default, ES_MULTILINE + ES_AUTOVSCROLL,hwnd )
-Print #10," 7 "
                 If MINUTOS="" Or MINUTOS="0" Then
-Print #10," 8 "
                    Print #10,"SE VA POR ACA ??? cntinter ";cntinter
                    Close 7    
                   FILEFLUSH(-1)  
                    maxcntinter=cntinter
                    Exit Do 
                 EndIf
-Print #10," 9 "
                 ''If INTERVALO1=0 Then
                 ''   MENSAJE2=MENSAJE1
                 ''EndIf
                 MENSAJE2=MENSAJES_FIJOS_INTER(cntinter)
-Print #10," 10 "
                 MENSAJE2=InputBox("MENSAJE" ,"CAMBIE O ACEPTE EL MENSAJE ", MENSAJE2, ES_MULTILINE + ES_AUTOVSCROLL,hwnd )
-Print #10," 11 "     
                 INTERVALO1=CInt(MINUTOS)*60 'en  segundo
-Print #10," 12 "
                 intervalosvec(cntinter)=Str(INTERVALO1/60)
-Print #10," 13 "
                 INTERVALO2=0
-Print #10," 14 "
                 MENSAJES_FIJOS_INTER(cntinter) = MENSAJE2    
                 
                 If LEN (Trim(MINUTOS))=1 Then 'SI LA LEN ES 1 NO FUNCIONA, DEBE SER 01 EN VEZ DE 1 COSA DEL BASIC DE MIERDA JAJAJA
                    MINUTOS="0"+MINUTOS
                 EndIf
                 Print #7, MINUTOS;",";MENSAJE2 ' EL Unico y ULTIMO
-Print #10," 15 "
                 cntinter=cntinter+1
                 maxcntinter=cntinter
             Loop
-            Print #10," 16 salio del loop "
           ''  FILEFLUSH(-1)
             Sleep 50 
             Close 7    
