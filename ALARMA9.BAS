@@ -245,7 +245,7 @@ GadgetToolTip(9,"(NI)TAMAÑO LETRA")
 Var TIEMPO1=Time
 Var TIEMPO2=Time
 Var TIEMPO3=Time
-'''Open "DEBUG.TXT"  For Output As 10  '''' DEBUG DE SALIDA 
+Open "DEBUG.TXT"  For Output As 10  '''' DEBUG DE SALIDA 
 Open "INTERVALOS.TXT" For APPEND As 1 ' SINO EXISTE LO CREA
 Sleep 10
 Close 1
@@ -318,6 +318,8 @@ Do
   Var EV=WaitEvent
    Select Case EV
      Case EventClose
+         fileflush(-1) 
+         Close 
          End
 '-------------------------        
      Case EventTimer 
@@ -331,14 +333,16 @@ Do
                 If SONIDOSIONO=TRUE Then
                    PlaySound(PRGDIR + "Ring05.wav", 0, SND_FILENAME+SND_NODEFAULT +SND_ASYNC)
                 EndIf    
+Print #10, " cntinter, MENSAJES_FIJOS_INTER(cntinter) ";cntinter, MENSAJES_FIJOS_INTER(cntinter)
                 Var t1= threadCall sub1 (MENSAJES_FIJOS_INTER(cntinter))
                 Sleep 1 ''' NECESITA UN SLEEP  SINO O CANCELA O NO LLEGA A ESCRIBIR EL MENSAJE LPMQTRMP!!
                 setfocus(hwnd)
                 INTERVALO2=0
                cntinter=cntinter+1
-               If cntinter >= maxcntinter Then
+               If cntinter > maxcntinter Then
                   cntinter=1
                EndIf
+
                If MENSAJES_FIJOS_INTER(cntinter)="" Then
                    MENSAJES_FIJOS_INTER(cntinter)="DESCANSE UN POCO .."
                EndIf
