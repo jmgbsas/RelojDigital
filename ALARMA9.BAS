@@ -245,7 +245,7 @@ GadgetToolTip(9,"(NI)TAMAÑO LETRA")
 Var TIEMPO1=Time
 Var TIEMPO2=Time
 Var TIEMPO3=Time
-Open "DEBUG.TXT"  For Output As 10  '''' DEBUG DE SALIDA 
+'''Open "DEBUG.TXT"  For Output As 10  '''' DEBUG DE SALIDA 
 Open "INTERVALOS.TXT" For APPEND As 1 ' SINO EXISTE LO CREA
 Sleep 10
 Close 1
@@ -333,7 +333,7 @@ Do
                 If SONIDOSIONO=TRUE Then
                    PlaySound(PRGDIR + "Ring05.wav", 0, SND_FILENAME+SND_NODEFAULT +SND_ASYNC)
                 EndIf    
-Print #10, " cntinter, MENSAJES_FIJOS_INTER(cntinter) ";cntinter, MENSAJES_FIJOS_INTER(cntinter)
+'''Print #10, " cntinter, MENSAJES_FIJOS_INTER(cntinter) ";cntinter, MENSAJES_FIJOS_INTER(cntinter)
                 Var t1= threadCall sub1 (MENSAJES_FIJOS_INTER(cntinter))
                 Sleep 1 ''' NECESITA UN SLEEP  SINO O CANCELA O NO LLEGA A ESCRIBIR EL MENSAJE LPMQTRMP!!
                 setfocus(hwnd)
@@ -492,7 +492,7 @@ Print #10, " cntinter, MENSAJES_FIJOS_INTER(cntinter) ";cntinter, MENSAJES_FIJOS
          
                 MINUTOS=InputBox("CONFIG ALARMA" ,"INTERVALO EN MINUTOS ", default, ES_MULTILINE + ES_AUTOVSCROLL,hwnd )
                 If MINUTOS="" Or MINUTOS="0" Then
-                   Print #10,"SE VA POR ACA ??? cntinter ";cntinter
+                  ''' Print #10,"SE VA POR ACA ??? cntinter ";cntinter
                    Close 7    
                   FILEFLUSH(-1)  
                    maxcntinter=cntinter
