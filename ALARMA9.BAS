@@ -278,15 +278,17 @@ Sleep 10
 '---------------COMIENZ A BARRER INTERVALOS EN 1
 cntinter=1
 If MENSAJES_FIJOS_INTER(cntinter)="" Then
-   MENSAJES_FIJOS_INTER(cntinter)=MENSAJE2
+   MENSAJES_FIJOS_INTER(cntinter)=MENSAJE1
 Else
-  MENSAJE2=MENSAJES_FIJOS_INTER(cntinter)
+  MENSAJE1=MENSAJES_FIJOS_INTER(cntinter) ''ES MENSAJE2 DE ANTES
 EndIf
 
 
 Sleep 100
+cntinter=1
 MINUTOS=Trim(intervalosvec(cntinter))
 INTERVALO1=CInt(MINUTOS)*60  ' 1er intervalo
+INTERVALO2=0
 
 Open "ALARMAS.TXT" For Append As 3 ' SINO EXISTE LO CREA
 Sleep 10
@@ -309,7 +311,7 @@ Loop
 'SI CNTALARMAS >0 TENEMOS ALGUNAS ALARMAS DEL DIA ANTERIOR
 ''''''''
 Close 4
-INTERVALO2=INTERVALO1 ' cintinter=1 INICIAMOS CON EL MENSAJE DE LO QUE COMUNICAOS COMO CAMINAR 5 MINUTOS
+''INTERVALO2=INTERVALO1 ' cintinter=1 INICIAMOS CON EL MENSAJE DE LO QUE COMUNICAOS COMO CAMINAR 5 MINUTOS
 ' LUEGO DE TERMINADO ESA CAMINATA ENVIAMOS OTRO MENSAJE TRABAJAR POR 20 MIN POR EJEMPLO
 '------------------------------LOOP--PRINCIPAL--------------------- 
 ''Print #10, " maxcntinter ";maxcntinter
@@ -325,59 +327,31 @@ Do
         If INTERVALO1 > 0 Then
           ''Print #10, "1) INTERVALO1 > 0,,,INTERVALO1 INTERVALO2 ";INTERVALO1, INTERVALO2
            HAYINTERVALO=1
-           If  INTERVALO2=INTERVALO1 Then
-              ''Print #10, "2) INTERVALO1=INTERVALO2, cntinter ";INTERVALO1, INTERVALO2, cntinter
-               If cntinter > 1 Then
-' ---PASAMOS AL OTRO INTERVALO SECUENCIAL-------------------------------------
-                   ''Print #10, "3) CNTINTER > 1 "; cntinter 
-                   If cntinter > maxcntinter Then  '' loopemos los intervalos
-                     ''Print #10, " Reinicio cntinter > max "
-                      cntinter=1
-                   EndIf  
-                   MINUTOS=Trim(intervalosvec(cntinter))
-                   INTERVALO1=CInt(MINUTOS)*60
-                   ''Print #10, "4) INTERVALO1 ";INTERVALO1
-               EndIf 
-  ' UNO DE LOS RING DE WINDOWS 10, si se pone en el inicio alarma2 y el wav, windows
-  ' ejecuta el wav incha pelota, cambiamos la extension del wav a ver si funciona aca
- ' y si win se deja de inchar las pelotas...jaja
-                If MENSAJES_FIJOS_INTER(cntinter)="" Then
-                   MENSAJES_FIJOS_INTER(cntinter)="DESCANSE UN POCO .."
-                Else
-                   If cntinter Mod 2 =0 Then  
-                      MENSAJE1="FIN DE "+ MENSAJES_FIJOS_INTER(cntinter)
-                   Else
-                      MENSAJE1= MENSAJES_FIJOS_INTER(cntinter)
-                   EndIf   
-                     
-'''Print "elegido MENSAJE1  " ;MENSAJE1
-'''MessBox("MENSAJE DE INTERVALO " ,UCase (MENSAJE1)+" "+Time,MB_TOPMOST + MB_SETFOREGROUND)
-      '''NO MUESTRA EL MENSAJE LA PMQTMP HIJO DE PUTA!     Var t1= threadCall sub1 (MENSAJE1)
-                EndIf
-
+           If  INTERVALO2=INTERVALO1   Then
+             ''Print #10, "2) INTERVALO1=INTERVALO2, cntinter ";INTERVALO1, INTERVALO2, cntinter
                 If SONIDOSIONO=TRUE Then
                    PlaySound(PRGDIR + "Ring05.wav", 0, SND_FILENAME+SND_NODEFAULT +SND_ASYNC)
-                EndIf
-             ''Beep
-''''        Print " VA A EMVIAR ";MENSAJES_FIJOS_INTER(cntinter)
+                EndIf    
                 Var t1= threadCall sub1 (MENSAJES_FIJOS_INTER(cntinter))
                 Sleep 1 ''' NECESITA UN SLEEP  SINO O CANCELA O NO LLEGA A ESCRIBIR EL MENSAJE LPMQTRMP!!
                 setfocus(hwnd)
                 INTERVALO2=0
-''-------------------------------------         
+               cntinter=cntinter+1
+               If cntinter >= maxcntinter Then
+                  cntinter=1
+               EndIf
+               If MENSAJES_FIJOS_INTER(cntinter)="" Then
+                   MENSAJES_FIJOS_INTER(cntinter)="DESCANSE UN POCO .."
+               EndIf
+
+               MINUTOS=Trim(intervalosvec(cntinter))
+               INTERVALO1=CInt(MINUTOS)*60
+
            Else
               INTERVALO2=INTERVALO2+1
               SetGadgetText (3,Str(TIEMPO1)+" "+dia)
-              If INTERVALO1=INTERVALO2 Then
-                 ''Print #10, "  INTERVALO1=INTERVALO2  "
-                 cntinter=cntinter+1
-                 If cntinter> maxcntinter Then
-                    cntinter=1
-                 EndIf
-                 MINUTOS=Trim(intervalosvec(cntinter))
-                 INTERVALO1=CInt(MINUTOS)*60
-                  ''Print #10, " cntinter,  INTERVALO1  "; cntinter,  INTERVALO1           
-              EndIf
+
+''-------------------------------------         
            EndIf
         Else
            HAYINTERVALO=0
