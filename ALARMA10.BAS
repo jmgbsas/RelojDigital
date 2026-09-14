@@ -79,7 +79,7 @@ If UCase(tipo)="A" Then
    titulo="MENSAJE DE ALARMA "
 EndIf
  
-MostrarMessageBoxPos(NULL, UCase (MENSAJE)+" "+Time, "MENSAJE DE INTERVALO ", MB_OK + MB_SYSTEMMODAL + MB_SETFOREGROUND +MB_ICONINFORMATION, anchom, altom)
+MostrarMessageBoxPos(NULL, UCase (MENSAJE)+" "+Time, titulo, MB_OK + MB_SYSTEMMODAL + MB_SETFOREGROUND +MB_ICONINFORMATION, anchom, altom)
 
 
 End Sub
