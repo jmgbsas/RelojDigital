@@ -68,7 +68,7 @@ Sub subx (MENSAJE As String, tipo As String ) ''' NO ANDA MAS CON MAS DE UN INTE
 '''en messagebox MB_TOPMOST no funciona se reemplaza por MB_SYSTEMMODAL 
 Dim anchom As Integer
 Dim altom As Integer
-anchom=ANCHO-565
+anchom=10 '''ANCHO-565
 altom=ALTO-240
 'Or MB_ICONINFORMATION
 Dim As String titulo
@@ -478,7 +478,7 @@ Do
     " BOTON R: BORRA EL INTERVALO. BOTON S : CON SONIDO (FONDO VERDE  )O SIN SONIDO( FONDO ROJO) "_
     " PARA ACEDER A LOS OTROS BOTONES COMO R Y S MAXIMIZAR LA VENTANA "_ 
     " BOTON H MUESTRA ESTE MENSAJE, CERRAR VENTANA SALE DEL PROGRAMA O INGRESANDO UN 0 AL INGRESAR " _
-    " LA HORA DE UNA NUEVA ALARMA. Intervalos multiples secuenciales.ALARMAS ABAJO A LA DERECHA "_
+    " LA HORA DE UNA NUEVA ALARMA. Intervalos multiples secuenciales.ALARMAS ABAJO A LA IZQUIERDA "_
     " AUTOR Jose Galeano  galeanoj2005@gmail.com BsAs Argentina") 
          Case 2 ' boton A CAMBIAMOS CON LA DE CLOSE
            default=Str("")
